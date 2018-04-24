@@ -12,7 +12,6 @@ def predict():
     img = request.get_json(force=True)['img']
     data = pdt(img)
     data = data[np.argsort(data[:, 1])][::-1, ...]
-    # print(data)
     return jsonify(data.tolist())
 
 
@@ -22,4 +21,4 @@ def index():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, use_reloader=True)
+    app.run()
