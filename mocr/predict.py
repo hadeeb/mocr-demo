@@ -1,14 +1,13 @@
 import base64
 import cv2
 import numpy as np
-from keras.models import load_model
 
 IMAGE_SIZE = 32
 
 
-def predict(img):
+def predict(model, img):
     img = process_image(img)
-    data = apply_nn(img)
+    data = apply_nn(model, img)
     return data
 
 
@@ -24,7 +23,8 @@ def process_image(img):
     # dilation
 
     # find contours
-    __, ctrs, __ = cv2.findContours(img_bw.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    __, ctrs, __ = cv2.findContours(
+        img_bw.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     # sort contours
     char_ctr = sorted(ctrs, key=lambda ctr: (cv2.boundingRect(ctr)[2] * cv2.boundingRect(ctr)[3]),
@@ -78,14 +78,14 @@ def skeletize(img):
     return skel
 
 
-def apply_nn(data):
+def apply_nn(model, data):
     image_data = data
     dataset = np.asarray(image_data)
     dataset = dataset.reshape((-1, 32, 32, 1)).astype(np.float32)
-    model = load_model('mocr/model.h5')
     a = model.predict(dataset)[0]
 
-    classes = np.genfromtxt('mocr/classes.csv', delimiter=',')[:, 1].astype(int)
+    classes = np.genfromtxt(
+        'mocr/classes.csv', delimiter=',')[:, 1].astype(int)
 
     res = np.column_stack((classes, a)).astype(int)
     return res
@@ -103,7 +103,8 @@ def data_uri_to_cv2_img(uri):
 
     # Alpha factor
     alpha_factor = alpha_channel[:, :, np.newaxis].astype(np.float32) / 255.0
-    alpha_factor = np.concatenate((alpha_factor, alpha_factor, alpha_factor), axis=2)
+    alpha_factor = np.concatenate(
+        (alpha_factor, alpha_factor, alpha_factor), axis=2)
 
     # Transparent Image Rendered on White Background
     base = rgb_channels.astype(np.float32) * alpha_factor
