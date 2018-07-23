@@ -4,7 +4,6 @@ import numpy as np
 from keras.models import load_model
 
 IMAGE_SIZE = 32
-model = load_model('mocr/model.h5')
 
 
 def predict(img):
@@ -83,6 +82,7 @@ def apply_nn(data):
     image_data = data
     dataset = np.asarray(image_data)
     dataset = dataset.reshape((-1, 32, 32, 1)).astype(np.float32)
+    model = load_model('mocr/model.h5')
     a = model.predict(dataset)[0]
 
     classes = np.genfromtxt('mocr/classes.csv', delimiter=',')[:, 1].astype(int)
