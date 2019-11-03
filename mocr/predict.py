@@ -1,5 +1,5 @@
 import base64
-import cv2
+from cv2 import cv2
 import numpy as np
 
 IMAGE_SIZE = 32
@@ -23,7 +23,7 @@ def process_image(img):
     # dilation
 
     # find contours
-    __, ctrs, __ = cv2.findContours(
+    ctrs, __ = cv2.findContours(
         img_bw.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     # sort contours
